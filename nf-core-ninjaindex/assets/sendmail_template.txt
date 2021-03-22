@@ -1,0 +1,13 @@
+To: $email
+Subject: $subject
+Mime-Version: 1.0
+Content-Type: multipart/related;boundary="nfcoremimeboundary"
+
+--nfcoremimeboundary
+Content-Type: text/html; charset=utf-8
+
+$email_html
+
+
+
+--nfcoremimeboundary--

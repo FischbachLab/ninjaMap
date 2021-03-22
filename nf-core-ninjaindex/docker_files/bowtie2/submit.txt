@@ -1,0 +1,20 @@
+
+# Aegea submit needs to export 4 variables:
+# [REQUIRED]
+# coreNum = number of available cores; usually the same as vcpus
+# fastq1 = S3path to forward fastq
+# fastq2 = S3path to reverse fastq
+# s3OutputPath = Root directory for all the output files from this run.
+##
+# [OPTIONAL]
+# Almost all variable declared with ':-' in the accompanying run_iggsearch.sh script can be substituted by exporting the value in the batch submit command. For example:
+# S3DBPATH = by default will use the default sourmash refseq k51 database; else provide an accessible s3 path to a .tar.gz database folder here.
+
+# Test
+aegea batch submit --watch --retry-attempts 1 --queue microbiome-highPriority --image sunitjain/bowtie2:latest --storage /mnt=500 --memory 64000 --vcpus 16 --command="./run_metaphlan.sh"
+
+# Example with only required parameters:
+aegea batch submit --retry-attempts 3 --queue microbiome-lowPriority --image sunitjain/iggsearch:20190320130017 --storage /mnt=500 --memory 64000 --vcpus 16 --command="export coreNum=16; export s3OutputPath=s3://czbiohub-microbiome/Sunit_Jain/Synthetic_Community/IGGsearch_Test/Dorea-longicatena-DSM-13814; export fastq1=s3://czbiohub-brianyu/Original_Sequencing_Data/180727_A00111_0179_BH72VVDSXX/Alice_Cheng/Strain_Verification/Dorea-longicatena-DSM-13814_S275_R1_001.fastq.gz; export fastq2=s3://czbiohub-brianyu/Original_Sequencing_Data/180727_A00111_0179_BH72VVDSXX/Alice_Cheng/Strain_Verification/Dorea-longicatena-DSM-13814_S275_R2_001.fastq.gz;./run_iggsearch.sh"
+
+# Example with overriding parameters:
+# aegea batch submit --retry-attempts 3 --queue microbiome-lowPriority --image sunitjain/iggsearch:20190320130017 --storage /mnt=500 --memory 64000 --vcpus 16 --command="export trimQuality=30;export coreNum=16; export s3OutputPath=s3://czbiohub-microbiome/Sunit_Jain/Synthetic_Community/IGGsearch_Test/Dorea-longicatena-DSM-13814-trimq30; export fastq1=s3://czbiohub-brianyu/Original_Sequencing_Data/180727_A00111_0179_BH72VVDSXX/Alice_Cheng/Strain_Verification/Dorea-longicatena-DSM-13814_S275_R1_001.fastq.gz; export fastq2=s3://czbiohub-brianyu/Original_Sequencing_Data/180727_A00111_0179_BH72VVDSXX/Alice_Cheng/Strain_Verification/Dorea-longicatena-DSM-13814_S275_R2_001.fastq.gz;./run_iggsearch.sh"

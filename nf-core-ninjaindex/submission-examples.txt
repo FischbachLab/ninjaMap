@@ -1,0 +1,5 @@
+#Run upgraded ninjaIndex pipeline with multiple BAM files ( latest version )
+nextflow run -resume main.nf --genomes 's3://czbiohub-microbiome/test/3genomes/*.fna' --outdir 's3://czbiohub-microbiome/test10' -profile czbiohub_aws
+
+# Run test case
+nextflow run main.nf -profile test
