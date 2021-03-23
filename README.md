@@ -16,26 +16,27 @@ This tool runs in two steps, ninjaIndex and ninjaMap. It will accept a directory
 
 ## Pipeline overview
 
-1. The ninjaIndex pipeline is built using [Nextflow](https://www.nextflow.io/)
+Step 1. The ninjaIndex pipeline is built using [Nextflow](https://www.nextflow.io/)
 and processes data using the following steps:
 
 * [ART] - Generate synthetic short reads for each genome
 * [Bowtie2] - align reads to all reference genomes
-* [ninjaIndex] - generate ninja index for a give synthetic community
+* [ninjaIndex] - generate ninja index for a given synthetic community
 
-2. The ninjaMap pipeline accurately quantify a strain with abundance.
+Step 2. The ninjaMap pipeline accurately quantify a strain with abundance.
 
 
 ## Quick usage
 
 ### Generate a ninjaIndex
 ```bash
-nextflow run  main.nf --genomes 's3://inoput/*.fna' --outdir 's3://output/' -profile aws
+
+./nf-core-ninjaindex/nextflow run  main.nf --genomes 's3://inoput/*.fna' --outdir 's3://output/' -profile aws
 ```
 
 ### Run ninjaMap with an existing ninjaIndex:
 ```pyhton
-ninjaMap.py -bam name_sorted.bam -bin contig_strain_assignments.tsv -prefix mycommunity
+./ninjaMap/ninjaMap.py -bam name_sorted.bam -bin contig_strain_assignments.tsv -prefix mycommunity
 ```
 
 ## Docker
@@ -53,13 +54,13 @@ docker container run \
     -prefix mycommunity
 ```
 
-## Paper
+## Paper Citation
 
+To be added
 
 ## License
 
-[GNU General Public License, version 3] (https://www.gnu.org/licenses/gpl-3.0.html)
-
+[GNU GPL] (https://www.gnu.org/licenses/gpl-3.0.html)
 
 ## Questions / Concerns
 
