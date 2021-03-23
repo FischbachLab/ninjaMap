@@ -64,6 +64,6 @@ To be added
 
 ## Questions / Concerns
 
-- [Sunit Jain](microbiome.ninja) (dev)
+- [Sunit Jain](https://www.sunitjain.com/)
 - Xiandong Meng (xdmeng at stanford.edu)
 - Michael Fischbach ( fischbach at fischbachgroup.org )
