@@ -54,7 +54,7 @@ docker container run \
     -prefix mycommunity
 ```
 
-## Paper Citation
+## Citation
 
 To be added
 
