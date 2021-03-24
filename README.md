@@ -28,15 +28,15 @@ Step 2. The ninjaMap pipeline accurately quantify a strain with abundance.
 
 ## Quick usage
 
-### Generate a ninjaIndex
+### Generate a ninjaIndex file on aws
 ```bash
 
-./nf-core-ninjaindex/nextflow run  main.nf --genomes 's3://inoput/*.fna' --outdir 's3://output/' -profile aws
+nextflow run ./nf-core-ninjaindex/main.nf --genomes 's3://bucket/input/*.fna' --outdir 's3://bucket/output/' -profile aws
 ```
 
-### Run ninjaMap with an existing ninjaIndex:
+### Run ninjaMap with an existing ninjaIndex using 16 threads:
 ```pyhton
-./ninjaMap/ninjaMap.py -bam name_sorted.bam -bin contig_strain_assignments.tsv -prefix mycommunity
+./ninjaMap/scripts/ninjaMap.py -threads 16 -bam sample_sorted.bam -bin binmap.tsv -prefix mycommunity
 ```
 
 ## Docker
@@ -44,13 +44,13 @@ The generic command to run a ninjaMap docker container:
 
 ```bash
 docker container run \
-    -v /host/path/to/indata/:/indata/ \
-    -v /host/path/to/outdata/:/outdata/ \
+    -v /host/path/to/indata/:/input_data/ \
+    -v /host/path/to/outdata/:/output_data/ \
     fischbachlab/ninjamap \
-    python ninjaMap.py \
-    -bin /indata/binmap.tsv \
-    -bam /indata/input.sortedByCoord.bam \
-    -outdir /outdata/summary \
+    python ./scripts/ninjaMap.py \
+    -bin /input_data/binmap.tsv \
+    -bam /input_data/input.sorted.bam \
+    -outdir /output_data/summary \
     -prefix mycommunity
 ```
 
@@ -66,4 +66,4 @@ To be added
 
 - [Sunit Jain](https://www.sunitjain.com/)
 - Xiandong Meng (xdmeng at stanford.edu)
-- Michael Fischbach ( fischbach at fischbachgroup.org )
+- PI: Michael Fischbach ( fischbach at fischbachgroup.org )
