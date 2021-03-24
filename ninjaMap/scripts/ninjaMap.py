@@ -111,7 +111,7 @@ python ninjaMap.py -bin contig_names_bin_map.txt -bam Bacteroides-sp-9-1-42FAA/B
 """)
 # Required
 p.add_argument('-bam', dest='bamfile', action='store', type=str, required = True,
-                help='name sorted bam file.')
+                help='sorted bam file and its indexed bam.bai file must be present in same directory')
 # p.add_argument('-fasta', dest='fastafile', action='store', type=str, required = True,
 #                 help='database fasta file')
 p.add_argument('-bin', dest='binmap', action='store', type=str, required = True,

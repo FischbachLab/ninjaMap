@@ -33,12 +33,17 @@ Step 2. The ninjaMap pipeline accurately quantify a strain with abundance.
 ## Quick usage
 
 ### Generate a ninjaIndex file on aws
-```bash
 
+The input of the ninjaIndex is a list of genome files in fasta format.
+
+```bash
 nextflow run ./nf-core-ninjaindex/main.nf --genomes 's3://bucket/input/*.fna' --outdir 's3://bucket/output/' -profile aws
 ```
 
 ### Run ninjaMap with an existing ninjaIndex using 16 threads:
+
+The main input of the ninjaMap is a binmap file generated from the 1st step, and a sorted BAM file and its indexed bam.bai file must be present in same directory.
+
 ```pyhton
 ./ninjaMap/scripts/ninjaMap.py -threads 16 -bam sample_sorted.bam -bin binmap.tsv -prefix mycommunity
 ```
@@ -65,11 +70,11 @@ docker container run \
 python  ./ninjaMap/scripts/ninjaMap.py --help
 Description:
 This script will calculate the abundance of a strain in a defined microbial community.
-Usage: ninjaMap.py -bam name_sorted.bam -bin contig_strain_assignments.tsv -prefix my_community
+Usage: ninjaMap.py -bam sorted.bam -bin binmap.tsv -prefix my_community
 
 optional arguments:
   -h, --help          show this help message and exit
-  -bam BAMFILE        name sorted bam file.
+  -bam BAMFILE        sorted bam file and its indexed bam.bai file must be present in same directory.
   -bin BINMAP         tab-delimited file with Col1= contig name and Col2=Bin/Strain name
   -outdir OUTDIR      output directory
   -prefix PREFIX      output prefix
