@@ -32,7 +32,7 @@ Step 2. The ninjaMap pipeline accurately quantify a strain with abundance.
 
 ## Quick usage
 
-### Generate a ninjaIndex file on aws
+### 1. Generate a ninjaIndex file on aws
 
 The input of the ninjaIndex is a list of genome files in fasta format.
 
@@ -40,7 +40,7 @@ The input of the ninjaIndex is a list of genome files in fasta format.
 nextflow run ./nf-core-ninjaindex/main.nf --genomes 's3://bucket/input/*.fna' --outdir 's3://bucket/output/' -profile aws
 ```
 
-### Run ninjaMap with an existing ninjaIndex using 16 threads:
+### 2. Run ninjaMap with an existing ninjaIndex using 16 threads:
 
 The main input of the ninjaMap is a binmap file generated from the 1st step, and a sorted BAM file and its indexed bam.bai file must be present in same directory.
 
