@@ -12,7 +12,7 @@ LABEL authors="Xiandong Meng" \
 RUN conda update -n base -c defaults conda
 
 # Install Bowtie2
-RUN conda install -c bioconda -y bowtie2 samtools bbmap
+RUN conda install -c bioconda -y bowtie2 samtools openssl=1.0 bbmap
 RUN conda install -c conda-forge -y awscli
 
 ADD run_bowtie2.sh /usr/local/bin/run_bowtie2.sh
