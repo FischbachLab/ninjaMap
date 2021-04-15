@@ -1,0 +1,186 @@
+---
+title: "Aggregate NinjaMap Data"
+author: "Sunit"
+date: "02/18/2021"
+output: html_document
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(fs)
+library(ggbeeswarm)
+library(lubridate)
+library(zip)
+```
+
+# Adjust location for the utility script
+```{r setup, include=FALSE}
+nm_basedir = '/Users/sunit.jain/Research/NinjaMap'
+source(paste(nm_basedir,'aggregate_data_util_functions.R', sep='/'))
+```
+
+# S3 path should be in the format `<s3_nm_base_path>/<db_name>/<study_name>`
+```{r setup, include=FALSE}
+s3_nm_base_path = 's3://czbiohub-microbiome/Synthetic_Community/NinjaMap_Narrow/Index'
+db_name = "db_SCv2_4" # should be same as on S3
+study_name = 'Flow-SW-rep2' # also used as output prefix
+```
+
+# Adjust local output location and prefix (time_stamp)
+```{r setup, include=FALSE}
+time_stamp = now() %>% format("%Y%m%d")
+workdir = '/Users/sunit.jain/Research/Alice/in_vivo/Flow/Ninjamap'
+```
+
+## Setup Project paths
+```{r setup_paths, include=FALSE}
+local_base = paste(workdir,db_name, sep='/')
+s3_base = paste0(s3_nm_base_path,"/",db_name)
+```
+
+# DB Metadata
+```{r read_metadata, include=FALSE}
+# # generate_report.py output
+# db_meta = read_csv('/Users/sunit.jain/Research/NinjaMap/Database/SCv1_2/SCv1_2.report.csv') 
+# 
+# # from "Sequencing" tab of https://docs.google.com/spreadsheets/d/1rZUfisKKmPfLkZP1eEsNFyCKUyMm6nHQQAhNxnJJYXE/edit#gid=280797532
+# strain_isolates_names_map = read_csv('/Users/sunit.jain/Research/Alice/in_vitro/SEEDFILES/StrainIsolates/shared/20200506_all_strainIso_sequencing_efforts.csv') %>% 
+#   select(sampleName,sample_id,Run) %>% 
+#   distinct()
+```
+
+# Setup local output dir strucutre
+```{r}
+study_s3_base = paste(s3_base,study_name, sep='/')
+study_output_base = make_dir(paste(local_base,study_name, sep = '/'))
+study_analysis_path = make_dir(paste(study_output_base,"analysis", sep = '/'))
+study_raw_output_path = make_dir(paste(study_output_base,"raw_output", sep = '/'))
+study_figures_path = make_dir(paste(study_output_base,"figures", sep = '/'))
+```
+
+# Download from S3
+```{r}
+# download_all_runs(runs_list,study_raw_output_path,study_s3_base)
+download_from_s3(study_raw_output_path, s3_base)
+```
+
+## Aggregate all the outputs, by stacking.
+```{r}
+strain_dropouts = suppressMessages(aggregate_abundance_data(parent_path = study_raw_output_path)) 
+strain_read_stats = suppressMessages(aggregate_read_stats(parent_path = study_raw_output_path)) 
+```
+
+## Clean up and compress (OPTIONAL)
+```{r}
+zipr(paste0(study_raw_output_path,".zip"), study_raw_output_path)
+dir_delete(study_raw_output_path)
+```
+
+
+## Split outputs by dimension
+```{r}
+sd_read_fraction_matrix = strain_dropouts %>% 
+  select(sample_id, Strain_Name, Read_Fraction) %>% 
+  group_by(Strain_Name) %>% 
+  spread(sample_id, Read_Fraction) 
+  
+sd_percent_cov_matrix = strain_dropouts %>% 
+  select(sample_id, Strain_Name, Percent_Coverage) %>% 
+  group_by(Strain_Name) %>% 
+  spread(sample_id, Percent_Coverage)
+
+sd_cov_depth_matrix = strain_dropouts %>% 
+  select(sample_id, Strain_Name, Coverage_Depth) %>% 
+  group_by(Strain_Name) %>% 
+  spread(sample_id, Coverage_Depth) 
+```
+
+# Save files
+```{r}
+strain_dropouts %>% 
+  write_csv(paste0(study_analysis_path,'/',time_stamp,"_",study_name,".long.csv"),append = FALSE,col_names = TRUE)
+strain_read_stats %>% 
+  write_csv(paste0(study_analysis_path,'/',time_stamp,"_",study_name,".read_stats.csv"),append = FALSE,col_names = TRUE)
+
+sd_read_fraction_matrix %>% 
+  write_csv(paste0(study_analysis_path,'/',time_stamp,"_",study_name,".readFraction.csv"),append = FALSE,col_names = TRUE)
+sd_percent_cov_matrix %>% 
+  write_csv(paste0(study_analysis_path,'/',time_stamp,"_",study_name,".percCoverage.csv"),append = FALSE,col_names = TRUE)
+sd_cov_depth_matrix %>% 
+  write_csv(paste0(study_analysis_path,'/',time_stamp,"_",study_name,".covDepth.csv"),append = FALSE,col_names = TRUE)
+```
+
+
+```{r}
+# db_meta %>% 
+#   anti_join(., sd_cov_depth_matrix, by = c("bin_name" = "Strain_Name")) %>% 
+#   select(bin_name)
+```
+
+## Plots
+```{r}
+fragments_stats_df = aggregate_fragment_stats(strain_read_stats, how="all")
+```
+
+### Waffle Plots
+
+#### Median across all Samples
+
+```{r}
+waffle_df = strain_read_stats %>% 
+  process_fragment_stats() %>% 
+  summarize_stats_by_steps()
+
+sum(waffle_df$values)
+```
+
+```{r}
+waffle_df %>% 
+  waffle_plot(title = "NinjaMap Read Fate", subtitle = "Median across all samples")
+ggsave(paste(study_figures_path,"read_fates.waffle_plot.eps", sep="/"),device = "eps",width = 11,height = 8.5,units = "in", dpi = "retina")
+```
+
+#### By Sample
+```{r}
+library(foreach)
+foreach(sample_name=unique(strain_read_stats$sample_id)) %do% {
+  p = NULL
+  p = strain_read_stats %>% 
+    filter(sample_id == sample_name) %>% 
+    process_fragment_stats() %>% 
+    summarize_stats_by_steps() %>% 
+    waffle_plot(title = "NinjaMap Read Fate", subtitle = paste0("Sample: ",sample_name))
+  
+  ggsave(plot = p, 
+         filename = paste0(study_figures_path,"/",sample_name,".read_fates.waffle_plot.eps"),
+         device = "eps",
+         width = 11,
+         height = 8.5,
+         units = "in",
+         dpi = "retina")
+}
+```
+
+
+```{r}
+plot_fragment_stats(fragments_stats_df)
+ggsave(paste(study_figures_path,"fragment_stats.pdf", sep="/"), height = 12, width = 16, units = "in",dpi = "retina")
+```
+
+```{r}
+aggregate_fragment_stats(strain_read_stats, how="post_qc") %>% 
+  plot_fragment_stats()
+ggsave(paste(study_figures_path,"fragment_stats.post_qc.pdf", sep="/"), height = 12, width = 16, units = "in",dpi = "retina")
+```
+
+```{r}
+strain_dropouts %>% 
+    mutate(formatted_name = sample_id) %>%
+  brian_plot(title = "Strain abundance by Sample")+
+  geom_point(aes(color=Strain_Name), show.legend = FALSE)+
+  geom_line(aes(group=Strain_Name), alpha=0.1,show.legend = FALSE)
+ggsave(paste(study_figures_path,"brian_plot.basic.pdf", sep="/"), height = 12, width = 16, units = "in",dpi = "retina")
+```
+
