@@ -13,23 +13,17 @@ library(fs)
 library(ggbeeswarm)
 library(lubridate)
 library(zip)
-```
 
 # Adjust location for the utility script
-```{r setup, include=FALSE}
 nm_basedir = '/Users/sunit.jain/Research/NinjaMap'
 source(paste(nm_basedir,'aggregate_data_util_functions.R', sep='/'))
-```
 
 # S3 path should be in the format `<s3_nm_base_path>/<db_name>/<study_name>`
-```{r setup, include=FALSE}
 s3_nm_base_path = 's3://czbiohub-microbiome/Synthetic_Community/NinjaMap_Narrow/Index'
 db_name = "db_SCv2_4" # should be same as on S3
 study_name = 'Flow-SW-rep2' # also used as output prefix
-```
 
 # Adjust local output location and prefix (time_stamp)
-```{r setup, include=FALSE}
 time_stamp = now() %>% format("%Y%m%d")
 workdir = '/Users/sunit.jain/Research/Alice/in_vivo/Flow/Ninjamap'
 ```
@@ -38,17 +32,6 @@ workdir = '/Users/sunit.jain/Research/Alice/in_vivo/Flow/Ninjamap'
 ```{r setup_paths, include=FALSE}
 local_base = paste(workdir,db_name, sep='/')
 s3_base = paste0(s3_nm_base_path,"/",db_name)
-```
-
-# DB Metadata
-```{r read_metadata, include=FALSE}
-# # generate_report.py output
-# db_meta = read_csv('/Users/sunit.jain/Research/NinjaMap/Database/SCv1_2/SCv1_2.report.csv') 
-# 
-# # from "Sequencing" tab of https://docs.google.com/spreadsheets/d/1rZUfisKKmPfLkZP1eEsNFyCKUyMm6nHQQAhNxnJJYXE/edit#gid=280797532
-# strain_isolates_names_map = read_csv('/Users/sunit.jain/Research/Alice/in_vitro/SEEDFILES/StrainIsolates/shared/20200506_all_strainIso_sequencing_efforts.csv') %>% 
-#   select(sampleName,sample_id,Run) %>% 
-#   distinct()
 ```
 
 # Setup local output dir strucutre
