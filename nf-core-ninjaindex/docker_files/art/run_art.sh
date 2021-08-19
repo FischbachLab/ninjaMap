@@ -18,7 +18,7 @@ LOCAL=$(pwd)
 OUTPUTDIR=${LOCAL}/tmp_$( date +"%Y%m%d_%H%M%S" )
 LOCAL_OUTPUT="${OUTPUTDIR}/Sync"
 LOG_DIR="${LOCAL_OUTPUT}/Logs"
-RAW_FASTQ="${OUTPUTDIR}/raw_fastq"
+# RAW_FASTQ="${OUTPUTDIR}/raw_fastq"
 PAIRED_FASTQ="${LOCAL_OUTPUT}/paired_fastq"
 LOCAL_FASTA="${OUTPUTDIR}/${FASTA}"
 
@@ -47,7 +47,8 @@ COV_FOLD=${2:-10}
 
 # Get error free reads
 #java -jar $PICARD SamToFastq I=${PREFIX}_errFree.sam F=${PREFIX}1.fq F2=${PREFIX}2.fq
-picard SamToFastq I="${OUTPUTDIR}/${PREFIX}_errFree.sam" F="${OUTPUTDIR}/${PREFIX}_R1.fq" F2="${OUTPUTDIR}/${PREFIX}_R2.fq"
+# picard SamToFastq I="${OUTPUTDIR}/${PREFIX}_errFree.sam" F="${OUTPUTDIR}/${PREFIX}_R1.fq" F2="${OUTPUTDIR}/${PREFIX}_R2.fq"
+picard SamToFastq -I "${OUTPUTDIR}/${PREFIX}_errFree.sam" -F "${OUTPUTDIR}/${PREFIX}_R1.fq" -F2 "${OUTPUTDIR}/${PREFIX}_R2.fq"
 
 #compress fastq files
 gzip < "${OUTPUTDIR}/${PREFIX}_R1.fq" > $FWD
