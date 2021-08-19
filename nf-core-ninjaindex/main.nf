@@ -284,7 +284,8 @@ STEP 3
 */
 process generate_Ninja_Index {
 
-  memory { 256.GB * task.attempt }
+  cpus 32
+  memory { 250.GB * task.attempt }
   time { 4.hour * task.attempt }
 
   errorStrategy { task.exitStatus in 137..140 ? 'retry' : 'terminate' }
