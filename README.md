@@ -39,6 +39,18 @@ The input of the ninjaIndex is a list of genome files in fasta format.
 ```bash
 nextflow run ./nf-core-ninjaindex/main.nf --genomes 's3://bucket/input/*.fna' --outdir 's3://bucket/output/' -profile aws
 ```
+OR
+
+```{bash}
+aws batch submit-job \
+    --profile maf \
+    --job-name nf-ninjaindex \
+    --job-queue default-maf-pipelines \
+    --job-definition nextflow-production \
+    --container-overrides command=s3://nextflow-pipelines/ninjaindex,\
+"--genomes","'s3://dev-scratch/ReferenceDBs/NinjaMap/Index/12Com_20210528/fasta/*.fna'",\
+"--outdir","s3://genomics-workflow-core/Results/NinjaIndex/12Com_20210528/db"
+```
 
 ### 2. Run ninjaMap with an existing ninjaIndex using 16 threads:
 
