@@ -96,7 +96,6 @@ optional arguments:
   -mbq MIN_BASE_QUAL  minimum read base quality to consider for coverage calculations.
 ```
 
-
 ## Citation
 
 To be added
