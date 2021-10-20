@@ -48,8 +48,8 @@ aws batch submit-job \
     --job-queue default-maf-pipelines \
     --job-definition nextflow-production \
     --container-overrides command=s3://nextflow-pipelines/ninjaindex,\
-"--genomes","'s3://dev-scratch/ReferenceDBs/NinjaMap/Index/12Com_20210528/fasta/*.fna'",\
-"--outdir","s3://genomics-workflow-core/Results/NinjaIndex/12Com_20210528/db"
+"--genomes","'s3://dev-scratch/ReferenceDBs/NinjaMap/Index/12Com/fasta/*.fna'",\
+"--outdir","s3://genomics-workflow-core/Results/NinjaIndex/12Com/db"
 ```
 
 ### 2. Run ninjaMap with an existing ninjaIndex using 16 threads:
@@ -95,7 +95,6 @@ optional arguments:
   -truth TRUTH        If using debug, please provide one strain name that you would like to track.
   -mbq MIN_BASE_QUAL  minimum read base quality to consider for coverage calculations.
 ```
-
 
 ## Citation
 
