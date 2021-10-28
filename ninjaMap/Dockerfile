@@ -6,6 +6,7 @@ USER root:root
 ENV PATH "/opt/conda/bin:$PATH"
 
 # Install dependencies
+RUN  apt-get update --allow-releaseinfo-change  && apt-get install -y libtbb2
 RUN  conda install --freeze-installed -y nomkl numpy pandas \
       && conda install --freeze-installed -c conda-forge -y awscli biopython \
       && conda install --freeze-installed -c bioconda -y bowtie2 bedtools \
