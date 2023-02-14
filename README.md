@@ -95,6 +95,59 @@ optional arguments:
   -truth TRUTH        If using debug, please provide one strain name that you would like to track.
   -mbq MIN_BASE_QUAL  minimum read base quality to consider for coverage calculations.
 ```
+Output files for each sample
+====================
+
+The output files are organized into 4 folders.
+
+## bowtie2 folder
+
+The alignment file of all input reads aligned the defined community database in the bam format
+
+## Logs folder
+
+The running logs of various scripts
+
+## ninjaMap folder
+
+1. **\*.ninjaMap.abundance.csv**: this file shows the statistics of the abundance, coverage and depth of each strain in the defined community
+
++ Strain_Name: strain name<br>
++ Read_Fraction: the abundance in the defined community in percentage<br>
++ Percent_Coverage: the average coverage per strain in percentage<br>
++ Coverage_Depth: the average coverage depth<br>
+
+2. **\*.ninjaMap.read_stats.csv**: this file shows the statistics of input reads
+
++ File_Name: sample name <br>
++ Reads_Aligned: the number of aligned reads<br>
++ Reads_wPerfect_Aln: the number of perfectly aligned reads<br>
++ Reads_wSingular_Votes: the number of reads voted as singular<br>
++ Reads_wEscrowed_Votes: the number of reads voted as escrow<br>
++ Discarded_Reads_w_Perfect_Aln: the number of discarded perfectly aligned reads
+
+3. **\*.ninjaMap.strain_stats.csv**: this file shows the various statistics of each strains
+
+4. **\*.ninjaMap.votes.csv.gz**: the statistics of reads voting (singular or escrow)
+
+## Stats folder
+1. **adapter_trimming_stats_per_ref.txt**: this file shows the statistics of adapter trimming
+
+2. **read_accounting.csv**: this file shows the statistics shows the total number of reads, the number of reads after trimming and the number of aligned reads
+
+
+Aggregated output files for each study
+====================
+
+The aggregated output files are organized into 6 files.
+
+1. **\*.covDepth.csv**: this file shows the average coverage depth per strain by samples
+2. **\*.host_contaminants.csv**: this file shows the detected host contaminants (Human or Mouse) by samples if the unalignment rate is over 5%
+3. **\*.long.csv**: this is the long format of three files (\*.readFraction.csv, \*.covDepth.csv and \*.percCoverage.csv)
+4. **\*.percCoverage.csv**: this file shows the average coverage per strain in percentage by samples
+5. **\*.reads_stats.csv**: this file shows the reads statistics in read numbers by samples
+6. **\*.readFraction.csv**: this file shows the abundance in the defined community in percentage by samples
+
 
 ## Citation
 
