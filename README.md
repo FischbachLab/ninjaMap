@@ -1,4 +1,8 @@
-# NinjaMap
+# DEPRECATED NinjaMap
+
+## NinjaMap is no longer supported, please consider using nf-ninjamap (https://github.com/FischbachLab/nf-ninjamap) instead.
+## NinjaIndex is no longer supported, please consider using nf-ninjaindex (https://github.com/FischbachLab/nf-ninjaindex) instead.
+
 
 ninjaMap is a software tool to calculate strain abundance for a given microbial database.
 
